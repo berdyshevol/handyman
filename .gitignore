@@ -1,0 +1,7 @@
+venv/
+.env
+*.json
+token.pickle
+__pycache__/
+.vscode/
+.idea/
