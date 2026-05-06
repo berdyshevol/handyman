@@ -7,7 +7,7 @@ from llm_factory import get_llm
 
 SHEETS_SCOPES = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
 SERVICE_ACCOUNT_FILE = "service_account.json"
-SPREADSHEET_ID = "1wrItgWsgLmed3PlkaE8nuHEGBdgN20rXJAvDEvWWo1E"
+SPREADSHEET_ID = "1T6frl9KNkRIo16aqnYyCSBhTmGU3hmY0b__vqLVByTk"
 RANGE_NAME = "PricingSheet!A1:G100"
 
 def get_sheets_service():
@@ -92,6 +92,8 @@ Instructions:
 """
 
     response = model.invoke(prompt)
+    # print("Response from Pricing Agent:")
+    # print(response)
 
     content = response.content
    # Convert to plain text

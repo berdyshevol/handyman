@@ -35,8 +35,8 @@ If multiple things are requested, call multiple tools and combine the results in
 
 def print_agent_response(response):
     messages = response["messages"]
-    print("response messages")
-    print(messages)
+    # print("response messages")
+    # print(response)
     print("\n===== AGENT TRACE =====\n")
 
     for msg in messages:
