@@ -1,8 +1,8 @@
 from dotenv import load_dotenv
 from langchain.agents import create_agent
-from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import AIMessage, ToolMessage
 
+from llm_factory import get_llm
 from mypricing_tool import pricing_tool
 from myscheduling_tool import scheduling_tool
 from mycalendar_booking_tool import create_calendar_event_tool
@@ -10,10 +10,7 @@ from mycalendar_booking_tool import create_calendar_event_tool
 
 load_dotenv()
 
-model = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash",
-    temperature=0
-)
+model = get_llm(temperature=0)
 
 tools = [pricing_tool, scheduling_tool,create_calendar_event_tool]
 
@@ -38,6 +35,7 @@ If multiple things are requested, call multiple tools and combine the results in
 
 def print_agent_response(response):
     messages = response["messages"]
+    print("response messages")
     print(messages)
     print("\n===== AGENT TRACE =====\n")
 
