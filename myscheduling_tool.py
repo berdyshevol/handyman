@@ -44,30 +44,42 @@ def get_calendar_service(write_access: bool = False):
 
     return build("calendar", "v3", credentials=creds)
 
-#Convert weekday name to the next actual date
-def parse_next_weekday(requested_day: str):
+# Convert a weekday name OR a date string to an actual date.
+# Accepts: "Friday", "May 8", "May 8 2026", "May 8, 2026", "2026-05-08", "5/8/2026", "5/8".
+def parse_target_date(requested_day: str):
+    s = requested_day.strip().lower()
+
     weekdays = {
-        "monday": 0,
-        "tuesday": 1,
-        "wednesday": 2,
-        "thursday": 3,
-        "friday": 4,
-        "saturday": 5,
-        "sunday": 6,
+        "monday": 0, "tuesday": 1, "wednesday": 2, "thursday": 3,
+        "friday": 4, "saturday": 5, "sunday": 6,
     }
+    if s in weekdays:
+        today = datetime.now()
+        days_ahead = (weekdays[s] - today.weekday()) % 7 or 7
+        return (today + timedelta(days=days_ahead)).date()
 
-    requested_day = requested_day.strip().lower()
-    if requested_day not in weekdays:
-        raise ValueError(f"Unsupported day: {requested_day}")
+    date_formats_with_year = ("%Y-%m-%d", "%B %d %Y", "%B %d, %Y", "%b %d %Y", "%b %d, %Y", "%m/%d/%Y")
+    date_formats_no_year = ("%B %d", "%b %d", "%m/%d")
 
-    today = datetime.now()
-    target = weekdays[requested_day]
-    days_ahead = (target - today.weekday()) % 7
+    normalized = s.title()  # "may 8" → "May 8" for %B / %b parsing
+    today = datetime.now().date()
 
-    if days_ahead == 0:
-        days_ahead = 7
+    for fmt in date_formats_with_year:
+        try:
+            return datetime.strptime(normalized, fmt).date()
+        except ValueError:
+            continue
 
-    return (today + timedelta(days=days_ahead)).date()
+    for fmt in date_formats_no_year:
+        try:
+            d = datetime.strptime(normalized, fmt).date().replace(year=today.year)
+            if d < today:
+                d = d.replace(year=d.year + 1)
+            return d
+        except ValueError:
+            continue
+
+    raise ValueError(f"Unsupported day or date format: {requested_day}")
 
 
 #Define time windows
@@ -169,12 +181,19 @@ def scheduling_tool(
     Find available appointment slots in Google Calendar that best match the requested day and time window.
 
     Use this tool when the user asks for availability, appointment times, or scheduling options.
+
+    requested_day accepts:
+      - a weekday name: "Monday", "Friday" (resolves to the next occurrence)
+      - a date with year: "2026-05-08", "May 8 2026", "May 8, 2026", "5/8/2026"
+      - a date without year: "May 8", "5/8" (current year, rolls to next year if past)
+    time_window: "morning", "afternoon", or "evening".
+
     Returns JSON containing the best matching open slots.
     """
     try:
         calendar_service = get_calendar_service()
 
-        target_date = parse_next_weekday(requested_day)
+        target_date = parse_target_date(requested_day)
         window_start, window_end = get_time_window_bounds(time_window)
 
         tz = ZoneInfo(TIMEZONE)
