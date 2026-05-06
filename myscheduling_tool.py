@@ -103,8 +103,8 @@ def get_busy_periods(calendar_service, start_dt: datetime, end_dt: datetime, cal
 
     busy = []
     for block in busy_ranges:
-        busy_start = datetime.fromisoformat(block["start"].replace("Z", "+00:00")).replace(tzinfo=None)
-        busy_end = datetime.fromisoformat(block["end"].replace("Z", "+00:00")).replace(tzinfo=None)
+        busy_start = datetime.fromisoformat(block["start"].replace("Z", "+00:00"))
+        busy_end = datetime.fromisoformat(block["end"].replace("Z", "+00:00"))
         busy.append((busy_start, busy_end))
 
     return busy
