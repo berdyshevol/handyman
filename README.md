@@ -63,6 +63,11 @@ If `LLM_PROVIDER` is omitted, the project defaults to `google`.
 
 ### 3. Google Sheets — pricing data
 
+The demo project points at this pricing sheet:
+[Handyman Pricing — demo sheet](https://docs.google.com/spreadsheets/d/1T6frl9KNkRIo16aqnYyCSBhTmGU3hmY0b__vqLVByTk/edit)
+
+To use your own:
+
 1. Create a Google Sheet with a tab named `PricingSheet` and headers in row 1 (e.g. `service_type`, `base_price`, `urgency_multiplier`, `complexity_multiplier`, ...).
 2. Create a service account in Google Cloud Console, download its JSON key, and save it in the project root as `service_account.json`.
 3. Share the sheet with the service account's email (Viewer access is enough).
