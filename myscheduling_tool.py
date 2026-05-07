@@ -49,6 +49,10 @@ def get_calendar_service(write_access: bool = False):
 def parse_target_date(requested_day: str):
     s = requested_day.strip().lower()
 
+    relatives = {"today": 0, "tomorrow": 1, "yesterday": -1}
+    if s in relatives:
+        return datetime.now().date() + timedelta(days=relatives[s])
+
     weekdays = {
         "monday": 0, "tuesday": 1, "wednesday": 2, "thursday": 3,
         "friday": 4, "saturday": 5, "sunday": 6,
@@ -183,6 +187,7 @@ def scheduling_tool(
     Use this tool when the user asks for availability, appointment times, or scheduling options.
 
     requested_day accepts:
+      - "today", "tomorrow", "yesterday"
       - a weekday name: "Monday", "Friday" (resolves to the next occurrence)
       - a date with year: "2026-05-08", "May 8 2026", "May 8, 2026", "5/8/2026"
       - a date without year: "May 8", "5/8" (current year, rolls to next year if past)
