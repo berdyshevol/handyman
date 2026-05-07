@@ -31,6 +31,8 @@ Encourage the user to reply with the option number they want.
 
 Do not book anything unless the user has clearly confirmed a slot.
 
+If the user replies with an option number (e.g. "option 2", "the second one", "2") AND provides a customer name, that IS clear confirmation. Immediately call create_calendar_event_tool with the start_iso from the matching option in the most recent scheduling_tool result. Do not look up new slots or ask further clarifying questions in that case.
+
 If multiple things are requested, call multiple tools and combine the results into one response.
 """
 )
