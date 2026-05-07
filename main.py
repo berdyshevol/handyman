@@ -41,15 +41,15 @@ def print_agent_response(response):
     messages = response["messages"]
     # print("response messages")
     # print(response)
-    print("\n===== AGENT TRACE =====\n")
+    # print("\n===== AGENT TRACE =====\n")
 
     for msg in messages:
         if isinstance(msg, AIMessage):
             if getattr(msg, "tool_calls", None):
                 for tc in msg.tool_calls:
                     print(f"TOOL CALL: {tc.get('name')}")
-                    print(f"ARGUMENTS: {tc.get('args')}")
-                    print()
+                    # print(f"ARGUMENTS: {tc.get('args')}")
+                    # print()
             else:
                 if isinstance(msg.content, str):
                     print("FINAL RESPONSE:")
@@ -66,8 +66,8 @@ def print_agent_response(response):
                     print()
 
         elif isinstance(msg, ToolMessage):
-            print(f"TOOL OUTPUT ({msg.name}):")
-            print(msg.content)
+            # print(f"TOOL OUTPUT ({msg.name}):")
+            # print(msg.content)
             print()
 
 
