@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 from langchain.agents import create_agent
-from langchain_core.messages import AIMessage, ToolMessage
+from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 
 from llm_factory import get_llm
 from mypricing_tool import pricing_tool
@@ -79,12 +79,12 @@ def main():
             print("Goodbye.")
             break
 
-        conversation.append({"role": "user", "content": user_input})
+        conversation.append(HumanMessage(content=user_input))
 
         response = agent.invoke({"messages": conversation})
         print_agent_response(response)
 
-        conversation.extend(response["messages"])
+        conversation = response["messages"]
 
 
 if __name__ == "__main__":
