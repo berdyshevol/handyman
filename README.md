@@ -24,7 +24,7 @@ Timezone is hardcoded to `America/Chicago`.
 - A Google Cloud project with the **Sheets API** and **Calendar API** enabled
 - A Google **service account** key (for reading the pricing sheet)
 - An OAuth **desktop client** credentials file (for reading/writing the user's Google Calendar)
-- A Google **Gemini API key**
+- One LLM API key — either **Google Gemini** or **Anthropic Claude** (the project is provider-agnostic)
 
 ## Setup
 
@@ -40,13 +40,33 @@ pip install -r requirements.txt
 
 ### 2. Environment variables
 
-Create a `.env` file in the project root:
+Create a `.env` file in the project root. Pick **one** LLM provider:
 
 ```
+# Default — use Google Gemini
+LLM_PROVIDER=google
 GOOGLE_API_KEY=your_gemini_api_key_here
+
+# Or — use Anthropic Claude
+# LLM_PROVIDER=anthropic
+# ANTHROPIC_API_KEY=your_anthropic_api_key_here
 ```
+
+Optional model overrides:
+
+```
+GOOGLE_MODEL=gemini-2.5-flash                    # default
+ANTHROPIC_MODEL=claude-haiku-4-5-20251001        # default
+```
+
+If `LLM_PROVIDER` is omitted, the project defaults to `google`.
 
 ### 3. Google Sheets — pricing data
+
+The demo project points at this pricing sheet:
+[Handyman Pricing — demo sheet](https://docs.google.com/spreadsheets/d/1T6frl9KNkRIo16aqnYyCSBhTmGU3hmY0b__vqLVByTk/edit)
+
+To use your own:
 
 1. Create a Google Sheet with a tab named `PricingSheet` and headers in row 1 (e.g. `service_type`, `base_price`, `urgency_multiplier`, `complexity_multiplier`, ...).
 2. Create a service account in Google Cloud Console, download its JSON key, and save it in the project root as `service_account.json`.

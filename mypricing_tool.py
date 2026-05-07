@@ -1,12 +1,13 @@
 from langchain.tools import tool
-from langchain_google_genai import ChatGoogleGenerativeAI
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 import json
 
+from llm_factory import get_llm
+
 SHEETS_SCOPES = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
 SERVICE_ACCOUNT_FILE = "service_account.json"
-SPREADSHEET_ID = "1wrItgWsgLmed3PlkaE8nuHEGBdgN20rXJAvDEvWWo1E"
+SPREADSHEET_ID = "1T6frl9KNkRIo16aqnYyCSBhTmGU3hmY0b__vqLVByTk"
 RANGE_NAME = "PricingSheet!A1:G100"
 
 def get_sheets_service():
@@ -43,11 +44,8 @@ def pricing_tool(client_request: str):
         padded = row + [""] * (len(headers) - len(row))
         pricing_records.append(dict(zip(headers, padded)))
 
-    # Step 2: Ask Gemini to interpret pricing
-    model = ChatGoogleGenerativeAI(
-        model="gemini-2.5-flash",
-        temperature=0
-    )
+    # Step 2: Ask the configured LLM to interpret pricing
+    model = get_llm(temperature=0)
 
     prompt = f"""
 You are a pricing analyst for a handyman business.
@@ -94,6 +92,8 @@ Instructions:
 """
 
     response = model.invoke(prompt)
+    # print("Response from Pricing Agent:")
+    # print(response)
 
     content = response.content
    # Convert to plain text
